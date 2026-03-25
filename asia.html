@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Asia FaceMassage | Скульптурная нейроэстетика Бишкек</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --gold: #D9B48B;
+            --gold-light: #F3E0BE;
+            --gold-dim: rgba(217, 180, 139, 0.2);
+            --ink: #0C0B0A;
+            --ink-soft: #171513;
+            --cream: #FCF9F2;
+            --cream-muted: rgba(252, 249, 242, 0.7);
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        body {
+            background: var(--ink);
+            color: var(--cream);
+            font-family: var(--sans);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            font-weight: 300;
+        }
+
+        /* кастомный курсор — только для мыши, плавный */
+        @media (hover: hover) and (pointer: fine) {
+            #cursor, #cursor-ring { pointer-events: none; position: fixed; top: 0; left: 0; z-index: 9999; will-change: transform; transition: all 0.1s linear; }
+            #cursor { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; filter: drop-shadow(0 0 6px rgba(217,180,139,0.6)); transform: translate(-50%, -50%); }
+            #cursor-ring { width: 44px; height: 44px; border: 1.2px solid rgba(217,180,139,0.6); border-radius: 50%; backdrop-filter: blur(3px); transform: translate(-50%, -50%); }
+        }
+        @media (max-width: 900px), (pointer: coarse) {
+            body { cursor: auto; }
+            #cursor, #cursor-ring { display: none; }
+        }
+
+        /* стеклянный эффект */
+        .glass-card {
+            background: rgba(23, 21, 19, 0.45);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(217, 180, 139, 0.2);
+            border-radius: 44px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(217, 180, 139, 0.6);
+            background: rgba(217, 180, 139, 0.08);
+            transform: translateY(-6px);
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: #1A1815; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 12px; }
+
+        /* навигация — исправлено перекрытие */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            z-index: 500;
+            padding: 0 20px;
+            transition: all 0.4s ease;
+        }
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(12, 11, 9, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 80px;
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(217, 180, 139, 0.25);
+            transition: all 0.3s;
+        }
+        .navbar.scrolled .nav-inner {
+            background: rgba(12, 11, 9, 0.8);
+            backdrop-filter: blur(28px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            border-color: rgba(217,180,139,0.4);
+        }
+        .logo {
+            font-family: var(--serif);
+            font-size: 1.55rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: var(--cream);
+            text-decoration: none;
+            transition: text-shadow 0.3s;
+        }
+        .logo em { color: var(--gold); font-style: normal; font-weight: 500; }
+        .logo:hover { text-shadow: 0 0 12px rgba(217,180,139,0.5); }
+        .nav-cta {
+            background: transparent;
+            border: 1px solid rgba(217,180,139,0.55);
+            border-radius: 60px;
+            padding: 10px 28px;
+            color: var(--gold-light);
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+            font-family: var(--sans);
+        }
+        .nav-cta:hover {
+            background: var(--gold);
+            color: var(--ink);
+            border-color: var(--gold);
+            box-shadow: 0 0 14px rgba(217,180,139,0.5);
+            transform: scale(0.97);
+        }
+
+        /* hero — отступ чтобы не перекрывался */
+        .hero {
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+            padding-top: 100px; /* отступ под навигацию */
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 90% 60% at 30% 20%, rgba(217,180,139,0.08) 0%, transparent 65%);
+            animation: bgPulse 10s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px 70px 40px;
+            width: 100%;
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--gold);
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.2s forwards;
+            font-family: var(--sans);
+        }
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(3.2rem, 7vw, 6.8rem);
+            font-weight: 300;
+            line-height: 1.02;
+            letter-spacing: -0.01em;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.9s 0.35s forwards;
+        }
+        .hero h1 em { font-style: italic; color: var(--gold); text-shadow: 0 0 12px rgba(217,180,139,0.4); }
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--cream-muted);
+            max-width: 520px;
+            line-height: 1.6;
+            margin-bottom: 44px;
+            opacity: 0;
+            animation: fadeUp 1s 0.5s forwards;
+            font-weight: 300;
+            font-family: var(--sans);
+        }
+        .hero-actions { display: flex; gap: 28px; flex-wrap: wrap; opacity: 0; animation: fadeUp 1s 0.7s forwards; }
+        .btn-gold {
+            background: linear-gradient(125deg, var(--gold), #C6A15B);
+            border-radius: 60px;
+            padding: 16px 38px;
+            color: #0C0B09;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--sans);
+        }
+        .btn-gold:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 18px 30px -8px rgba(217,180,139,0.5); background: linear-gradient(125deg, #E7C48E, var(--gold)); }
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--cream);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(217,180,139,0.3);
+            transition: 0.2s;
+            font-family: var(--sans);
+        }
+        .btn-ghost i { transition: transform 0.3s; }
+        .btn-ghost:hover { color: var(--gold); border-bottom-color: var(--gold); }
+        .btn-ghost:hover i { transform: translateX(6px); }
+
+        /* stat bar */
+        .stat-bar {
+            background: rgba(12, 11, 9, 0.55);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(217,180,139,0.2);
+            border-bottom: 1px solid rgba(217,180,139,0.2);
+            position: relative;
+            z-index: 2;
+        }
+        .stat-bar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px 40px;
+            display: flex;
+            gap: 0;
+        }
+        .stat-item { flex: 1; text-align: center; border-right: 1px solid rgba(217,180,139,0.15); transition: all 0.2s; }
+        .stat-item:last-child { border: none; }
+        .stat-num { font-family: var(--serif); font-size: 2.3rem; font-weight: 500; color: var(--gold); letter-spacing: 0.02em; }
+        .stat-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.65; margin-top: 6px; font-family: var(--sans); }
+
+        /* sections */
+        .section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 40px;
+        }
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--gold);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            font-family: var(--sans);
+        }
+        .section-title {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 4vw, 3.6rem);
+            font-weight: 300;
+            line-height: 1.15;
+            margin-bottom: 20px;
+        }
+        .section-title em { font-style: italic; color: var(--gold); }
+
+        /* pain points */
+        .pain-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 56px;
+        }
+        .pain-card {
+            background: rgba(23, 21, 19, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 44px;
+            border: 1px solid rgba(217,180,139,0.2);
+            padding: 44px 32px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .pain-card:hover { transform: translateY(-8px); background: rgba(217,180,139,0.1); border-color: rgba(217,180,139,0.5); }
+        .pain-num { font-family: var(--serif); font-size: 3rem; color: rgba(217,180,139,0.3); margin-bottom: 20px; }
+        .pain-card h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; margin-bottom: 12px; }
+        .pain-card p { font-size: 0.88rem; opacity: 0.7; line-height: 1.6; font-family: var(--sans); }
+
+        /* services */
+        .services-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 60px;
+        }
+        .service-panel {
+            background: rgba(23, 21, 19, 0.45);
+            backdrop-filter: blur(16px);
+            border-radius: 48px;
+            border: 1px solid rgba(217,180,139,0.2);
+            padding: 48px 40px;
+            transition: all 0.3s;
+        }
+        .service-panel:hover { border-color: rgba(217,180,139,0.5); background: rgba(217,180,139,0.05); transform: translateY(-4px); }
+        .service-panel-title { font-family: var(--serif); font-size: 1.7rem; display: flex; gap: 14px; margin-bottom: 32px; align-items: center; }
+        .price-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,245,0.05); font-size: 0.9rem; font-family: var(--sans); }
+        .price-val { font-family: var(--serif); font-size: 1.1rem; color: var(--gold-light); }
+
+        /* packages */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-top: 60px;
+        }
+        .package-card {
+            background: rgba(23, 21, 19, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            border: 1px solid rgba(217,180,139,0.25);
+            padding: 44px 32px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .package-card:hover { transform: translateY(-12px); background: rgba(217,180,139,0.08); border-color: var(--gold); box-shadow: 0 30px 40px -20px rgba(0,0,0,0.5); }
+        .package-num { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 20px; font-family: var(--sans); }
+        .package-card h3 { font-family: var(--serif); font-size: 1.7rem; margin-bottom: 24px; }
+        .package-list li { display: flex; gap: 12px; padding: 10px 0; font-size: 0.85rem; opacity: 0.8; border-bottom: 1px solid rgba(255,255,245,0.04); list-style: none; font-family: var(--sans); }
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(217,180,139,0.6);
+            border-radius: 60px;
+            padding: 12px 28px;
+            color: var(--gold);
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-top: 20px;
+            font-family: var(--sans);
+            background: transparent;
+        }
+        .btn-outline:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 14px rgba(217,180,139,0.3); }
+
+        /* about section with orbit */
+        .about-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+        }
+        .about-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        .about-circle-outer {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            border: 1px solid rgba(217,180,139,0.4);
+            background: rgba(20,18,16,0.4);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .about-circle-inner {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(217,180,139,0.1), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .about-circle-inner i { font-size: 5rem; color: var(--gold); opacity: 0.9; filter: drop-shadow(0 0 8px rgba(217,180,139,0.5)); }
+        /* орбита вращается */
+        .orbit-ring {
+            position: absolute;
+            inset: -16px;
+            border-radius: 50%;
+            border: 1px dashed rgba(217,180,139,0.45);
+            animation: spinOrbit 22s linear infinite;
+            will-change: transform;
+        }
+        .orbit-dot {
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: var(--gold);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px var(--gold);
+        }
+        @keyframes spinOrbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        /* исправленный круг 8+ лет */
+        .about-years-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--gold), #b88d4a);
+            border-radius: 50%;
+            width: 88px;
+            height: 88px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #0C0B09;
+            font-family: var(--serif);
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.3);
+            text-align: center;
+            line-height: 1.2;
+        }
+        .years-num {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: var(--serif);
+        }
+        .years-text {
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-family: var(--sans);
+            font-weight: 500;
+        }
+        .about-text .premium-desc {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin: 24px 0 28px;
+            color: rgba(252,249,242,0.8);
+            font-weight: 300;
+            font-family: var(--sans);
+        }
+
+        /* modal */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(12,11,9,0.7);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.25s;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-box {
+            background: rgba(20,18,16,0.85);
+            backdrop-filter: blur(32px);
+            border: 1px solid rgba(217,180,139,0.4);
+            border-radius: 64px;
+            padding: 48px 44px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-box { transform: scale(1); }
+
+        /* footer */
+        footer {
+            background: rgba(8,8,6,0.9);
+            border-top: 1px solid rgba(217,180,139,0.15);
+            margin-top: 60px;
+        }
+        .footer-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 72px 40px 40px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 60px;
+        }
+        .footer-col h4 {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 24px;
+            letter-spacing: 0.05em;
+        }
+        /* интерактивные элементы футера как кнопки */
+        .footer-col a, .footer-col .footer-link, .footer-brand a, .wa-btn-footer {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: rgba(252,249,242,0.7);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            margin-bottom: 14px;
+            padding: 8px 0;
+            width: fit-content;
+            font-family: var(--sans);
+            border-bottom: 1px solid transparent;
+        }
+        .footer-col a i, .footer-brand a i, .wa-btn-footer i {
+            color: var(--gold);
+            transition: transform 0.2s;
+        }
+        .footer-col a:hover, .footer-brand a:hover, .wa-btn-footer:hover {
+            color: var(--gold-light);
+            transform: translateX(4px);
+            border-bottom-color: rgba(217,180,139,0.5);
+        }
+        .footer-col a:hover i, .footer-brand a:hover i, .wa-btn-footer:hover i {
+            transform: translateX(4px);
+        }
+        .footer-col p {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            color: rgba(252,249,242,0.6);
+            font-size: 0.85rem;
+        }
+        .wa-btn-footer {
+            background: rgba(37,211,102,0.12);
+            border: 1px solid rgba(37,211,102,0.4);
+            border-radius: 60px;
+            padding: 10px 24px;
+            color: #25D366;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            margin-top: 12px;
+        }
+        .wa-btn-footer:hover {
+            background: #25D366;
+            color: #0C0B09;
+            border-color: #25D366;
+            transform: translateY(-2px);
+        }
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px 40px;
+            border-top: 1px solid rgba(255,255,245,0.05);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: rgba(252,249,242,0.3);
+        }
+
+        /* анимации */
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(32px); }
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.2, 0.9, 0.4, 1), transform 1s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* адаптив */
+        @media (max-width: 900px) {
+            .hero { padding-top: 90px; }
+            .pain-grid, .services-layout, .packages-grid, .about-wrap, .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+            .stat-bar-inner { flex-wrap: wrap; gap: 28px; }
+            .stat-item { border-right: none; min-width: 45%; }
+            .hero-content { padding: 0 24px 40px; }
+            .section { padding: 60px 24px; }
+            .navbar .nav-inner { padding: 8px 20px; }
+            .about-circle-outer { width: 260px; height: 260px; }
+            .about-years-badge { width: 78px; height: 78px; bottom: 0; right: 5px; }
+            .years-num { font-size: 1.6rem; }
+            .years-text { font-size: 0.55rem; }
+        }
+        @media (max-width: 480px) {
+            .about-years-badge { width: 70px; height: 70px; }
+            .years-num { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<nav class="navbar" id="navbar">
+    <div class="nav-inner">
+        <a class="logo" href="#">Asia <em>FaceMassage</em></a>
+        <button class="nav-cta" id="openPriceModalBtn"><i class="fas fa-spa"></i> Прайс-лист</button>
+    </div>
+</nav>
+
+<a href="https://wa.me/996555702300?text=Здравствуйте!%20Хочу%20записаться%20на%20массаж%20лица" class="wa-float" style="position:fixed; bottom:28px; right:28px; background:#25D366; border-radius:50%; width:58px; height:58px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.8rem; z-index:400; box-shadow:0 6px 18px rgba(0,0,0,0.3); text-decoration:none; transition:transform 0.2s;" target="_blank" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-whatsapp"></i></a>
+
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="hero-eyebrow"><span>Студия премиум эстетики · Бишкек</span></div>
+        <h1>Скульптурный<br>массаж <em>лица</em></h1>
+        <p class="hero-sub">Без инъекций. Ручная мануальная коррекция, нейротехники. Мгновенный лифтинг-эффект.</p>
+        <div class="hero-actions">
+            <a href="https://wa.me/996555702300?text=Запись%20на%20массаж%20лица" class="btn-gold" target="_blank"><i class="fab fa-whatsapp"></i> Записаться</a>
+            <a href="#services" class="btn-ghost">Программы ухода <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<div class="stat-bar">
+    <div class="stat-bar-inner">
+        <div class="stat-item"><div class="stat-num">8+</div><div class="stat-label">Лет экспертизы</div></div>
+        <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Доверяют красоту</div></div>
+        <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">Инъекций — только руки</div></div>
+        <div class="stat-item"><div class="stat-num">−5</div><div class="stat-label">Лет визуальный эффект</div></div>
+    </div>
+</div>
+
+<div class="section reveal">
+    <div class="section-label">Ваши эстетические запросы</div>
+    <h2 class="section-title">С чем мы работаем <em>на высшем уровне</em></h2>
+    <div class="pain-grid">
+        <div class="pain-card"><div class="pain-num">01</div><h3>Отечность & токсины</h3><p>Лимфодренаж глубокого действия убирает припухлости, возвращая рельеф после первого сеанса.</p></div>
+        <div class="pain-card"><div class="pain-num">02</div><h3>Двойной подбородок</h3><p>Моделирующие техники восстанавливают четкий овал и подтягивают контур лица без хирургии.</p></div>
+        <div class="pain-card"><div class="pain-num">03</div><h3>Усталый вид</h3><p>Нейролифтинг расслабляет мышцы, возвращает сияние и здоровый тонус кожи.</p></div>
+    </div>
+</div>
+
+<div class="section reveal" id="services">
+    <div class="section-label">Премиальный прайс</div>
+    <h2 class="section-title">Эстетические <em>программы</em></h2>
+    <div class="services-layout">
+        <div class="service-panel">
+            <div class="service-panel-title"><i class="fas fa-feather-alt"></i> Депиляция</div>
+            <div class="price-row"><span>Бикини</span><span class="price-val">1 200 с</span></div>
+            <div class="price-row"><span>Лицо</span><span class="price-val">600 с</span></div>
+            <div class="price-row"><span>Подмышки</span><span class="price-val">300 с</span></div>
+            <div class="price-row"><span>Руки до локтя</span><span class="price-val">600 с</span></div>
+            <div class="price-row"><span>Ноги полностью</span><span class="price-val">1 000 с</span></div>
+        </div>
+        <div class="service-panel">
+            <div class="service-panel-title"><i class="fas fa-hand-sparkles"></i> Массаж & коррекция</div>
+            <div class="price-row"><span>Скульптурно-мануальная коррекция лица</span><span class="price-val">2 000 с</span></div>
+            <div class="price-row"><span>Массаж спины / воротниковая</span><span class="price-val">1 500 с</span></div>
+            <div class="price-row"><span>Массаж тела + лицо (комбо)</span><span class="price-val">3 500 с</span></div>
+            <div class="price-row"><span>Консультация + диагностика</span><span class="price-val">1 000 с</span></div>
+            <p class="price-note" style="font-size:0.7rem; margin-top:18px;">* Предоплата при заказе продукции — 1000 с</p>
+        </div>
+    </div>
+</div>
+
+<div class="section reveal">
+    <div class="section-label">Трансформационные пакеты</div>
+    <h2 class="section-title">Измените всё за <em>курс процедур</em></h2>
+    <div class="packages-grid">
+        <div class="package-card"><div class="package-num">ПАКЕТ I</div><h3>НейроЛёгкость</h3><ul class="package-list"><li><i class="fas fa-circle" style="font-size:6px;"></i> 5 массажей лица</li><li><i class="fas fa-circle" style="font-size:6px;"></i> 5 массажей тела</li><li><i class="fas fa-circle" style="font-size:6px;"></i> 3 сессии НДВ / НейроОбаяние</li></ul><a href="https://wa.me/996555702300?text=Хочу%20пакет%20НейроЛегкость" class="btn-outline" target="_blank">Узнать цену <i class="fas fa-chevron-right"></i></a></div>
+        <div class="package-card"><div class="package-num">ПАКЕТ II</div><h3>Минус 5 лет</h3><ul class="package-list"><li><i class="fas fa-circle"></i> 4 массажа лица</li><li><i class="fas fa-circle"></i> 2 массажа спины</li><li><i class="fas fa-circle"></i> 4 сессии Раздышивания</li></ul><a href="https://wa.me/996555702300?text=Интересуюсь%20пакетом%20Минус%205%20лет" class="btn-outline" target="_blank">Выбрать <i class="fas fa-chevron-right"></i></a></div>
+        <div class="package-card"><div class="package-num">ПАКЕТ III</div><h3>Лёгкость & Сияние</h3><ul class="package-list"><li><i class="fas fa-circle"></i> 1 массаж лица</li><li><i class="fas fa-circle"></i> 1 массаж спины</li><li><i class="fas fa-circle"></i> 1 сессия Раздышивания</li></ul><a href="https://wa.me/996555702300?text=Хочу%20пакет%20Легкость%20и%20сияние" class="btn-outline" target="_blank">Записаться <i class="fas fa-chevron-right"></i></a></div>
+    </div>
+</div>
+
+<div class="section reveal">
+    <div class="about-wrap">
+        <div class="about-visual">
+            <div class="about-circle-outer">
+                <div class="orbit-ring"><div class="orbit-dot"></div></div>
+                <div class="about-circle-inner"><i class="fas fa-star-of-life"></i></div>
+            </div>
+            <div class="about-years-badge">
+                <span class="years-num">8+</span>
+                <span class="years-text">лет</span>
+            </div>
+        </div>
+        <div class="about-text">
+            <div class="section-label">Авторский метод</div>
+            <h2 class="section-title"><em>Асия</em> — философия омоложения</h2>
+            <p class="premium-desc">Более 8 лет клинического опыта в мануальной коррекции. Медицинское образование, сертифицированный нейролифтинг-тренер. Моя методика сочетает глубокую миофасциальную проработку, лимфодренаж и нейроседативные техники. Каждая процедура — это ритуал обновления без боли и инъекций. Результат: упругая кожа, сияющий вид и гармония черт лица. Более 500 клиентов выбрали естественную эстетику.</p>
+            <a href="https://wa.me/996555702300?text=Хочу%20на%20консультацию%20к%20Асии" class="btn-outline" target="_blank">Личная консультация <i class="fas fa-calendar-alt"></i></a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="priceModal"><div class="modal-box"><div class="modal-icon"><i class="fas fa-gem"></i></div><h3 style="font-family:var(--serif);">Записаться в студию</h3><p style="margin:12px 0;">Напишите нам в WhatsApp, и мастер подберет идеальное время</p><div class="modal-btns" style="display:flex; gap:14px; justify-content:center; margin-top:28px;"><button class="modal-no" id="modalNoBtn" style="background:transparent; border:1px solid rgba(255,255,245,0.3); border-radius:60px; padding:10px 28px; cursor:pointer; transition:0.2s;">Позже</button><button class="modal-yes" id="modalYesBtn" style="background:var(--gold); border:none; border-radius:60px; padding:10px 28px; color:#0C0B09; font-weight:600; cursor:pointer; transition:0.2s;">Перейти в WhatsApp</button></div></div></div>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <a class="logo" href="#">Asia <em>FaceMassage</em></a>
+            <p style="margin-top:12px;">Скульптурная коррекция и нейроэстетика в сердце Бишкека</p>
+            <a href="https://wa.me/996555702300?text=Я%20хочу%20записаться%20к%20вам" class="wa-btn-footer" target="_blank"><i class="fab fa-whatsapp"></i> Записаться онлайн</a>
+        </div>
+        <div class="footer-col">
+            <h4>Контакты</h4>
+            <p><i class="fas fa-map-marker-alt"></i> ул. Абдумомунова 221 / Тоголок Молдо, БЦ Fort</p>
+            <a href="https://wa.me/996555702300" target="_blank"><i class="fab fa-whatsapp"></i> +996 555 702 300</a>
+            <p><i class="far fa-clock"></i> Ежедневно 10:00 – 20:00</p>
+        </div>
+        <div class="footer-col">
+            <h4>Социальные сети</h4>
+            <a href="https://www.instagram.com/asia_facemassage?igsh=MWVyYzRybHh4d2UxOQ==" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://wa.me/996555702300?text=Здравствуйте!%20Хочу%20записаться" target="_blank"><i class="fas fa-arrow-right"></i> Написать в WhatsApp</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2025 Asia FaceMassage — премиальный уход</span>
+        <span>Бишкек, Кыргызстан</span>
+    </div>
+</footer>
+
+<script>
+    (function() {
+        // курсор для ПК
+        if (window.innerWidth > 900 && matchMedia('(hover: hover)').matches) {
+            const cur = document.getElementById('cursor');
+            const ring = document.getElementById('cursor-ring');
+            if (cur && ring) {
+                let mx = 0, my = 0, rx = 0, ry = 0;
+                document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`; });
+                function animateRing() {
+                    rx += (mx - rx) * 0.12;
+                    ry += (my - ry) * 0.12;
+                    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+                    requestAnimationFrame(animateRing);
+                }
+                animateRing();
+                const interactives = document.querySelectorAll('a, button, .btn-outline, .nav-cta, .btn-gold');
+                interactives.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cur.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%) scale(2.6)`;
+                        ring.style.width = '56px';
+                        ring.style.height = '56px';
+                        ring.style.borderColor = 'rgba(217,180,139,0.9)';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        cur.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%) scale(1)`;
+                        ring.style.width = '44px';
+                        ring.style.height = '44px';
+                        ring.style.borderColor = 'rgba(217,180,139,0.6)';
+                    });
+                });
+            }
+        }
+
+        // navbar scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // reveal animation
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+        }, { threshold: 0.15 });
+        reveals.forEach(r => obs.observe(r));
+
+        // modal
+        const modal = document.getElementById('priceModal');
+        const openBtn = document.getElementById('openPriceModalBtn');
+        const noBtn = document.getElementById('modalNoBtn');
+        const yesBtn = document.getElementById('modalYesBtn');
+        if (openBtn) openBtn.addEventListener('click', () => modal.classList.add('active'));
+        if (noBtn) noBtn.addEventListener('click', () => modal.classList.remove('active'));
+        if (yesBtn) yesBtn.addEventListener('click', () => {
+            window.open('https://wa.me/996555702300?text=Здравствуйте!%20Хочу%20записаться%20на%20процедуру%20после%20прайс-листа', '_blank');
+            modal.classList.remove('active');
+        });
+        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
+
+        // counter animation
+        function animateCount(el, to, suffix = '') {
+            let start = null;
+            const duration = 1500;
+            const step = (ts) => {
+                if (!start) start = ts;
+                const progress = Math.min((ts - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 1.5);
+                let current = Math.floor(ease * Math.abs(to));
+                if (to < 0) current = -current;
+                if (suffix === '+') el.textContent = current + '+';
+                else if (suffix === 'years') el.textContent = (current < 0 ? '-' : '') + Math.abs(current);
+                else el.textContent = (to < 0 ? '-' : '') + Math.abs(current) + suffix;
+                if (progress < 1) requestAnimationFrame(step);
+                else el.textContent = (to < 0 ? '-' : '') + Math.abs(to) + suffix;
+            };
+            requestAnimationFrame(step);
+        }
+        const statItems = document.querySelectorAll('.stat-num');
+        const statObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    const txt = e.target.textContent;
+                    if (txt.includes('+')) animateCount(e.target, parseInt(txt), '+');
+                    else if (txt.includes('−')) animateCount(e.target, -5, '');
+                    else if (!isNaN(parseInt(txt))) animateCount(e.target, parseInt(txt), '');
+                    statObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        statItems.forEach(s => statObs.observe(s));
+    })();
+</script>
+</body>
+</html>
